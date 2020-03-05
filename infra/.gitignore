@@ -1,0 +1,3 @@
+# Terraform state may contain secrets and should be stored elsewhere. Also ignore plugins.
+*.tfstate*
+.terraform/

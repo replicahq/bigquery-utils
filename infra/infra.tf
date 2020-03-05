@@ -18,25 +18,32 @@ variable "location" {
   type    = string
 }
 
+locals {
+  gcp_admin_ids = [
+    for email in var.gcp_admin_emails :
+    "user:${email}"
+  ]
+}
+
 terraform {
   required_version = ">= 0.12"
 }
 
 provider "google-beta" { version = "~> 3.8" }
 
-// // Fetch the billing account, which is required to create the GCS bucket.
-// data "google_billing_account" "account" {
-//   provider = google-beta
-// 
-//   billing_account = var.gcp_billing_id
-//   open            = true
-// }
+// Fetch the billing account, which is required to create the GCS bucket.
+data "google_billing_account" "account" {
+  provider = google-beta
+
+  billing_account = var.gcp_billing_id
+  open            = true
+}
 
 // Create the project + IAM
 resource "google_project" "bigquery-utils" {
   provider = google-beta
 
-  // billing_account = data.google_billing_account.account.id
+  billing_account = data.google_billing_account.account.id
   name       = "BigQuery Utils"
   org_id     = var.gcp_org_id
   project_id = var.gcp_project_id
@@ -51,10 +58,7 @@ data "google_iam_policy" "bigquery-utils-project" {
 
   binding {
     role = "roles/owner"
-    members = [
-      for email in var.gcp_admin_emails :
-      "user:${email}"
-    ]
+    members = local.gcp_admin_ids
   }
 }
 resource "google_project_iam_policy" "bigquery-utils" {
@@ -78,6 +82,10 @@ resource "google_storage_bucket" "bigquery-utils" {
 data "google_iam_policy" "bigquery-utils-bucket" {
   provider = google-beta
 
+  binding {
+    role = "roles/storage.admin"
+    members = local.gcp_admin_ids
+  }
   binding {
     role = "roles/storage.objectViewer"
     members = [
@@ -112,6 +120,10 @@ resource "google_bigquery_dataset" "farmhash" {
   access {
     role          = "READER"
     special_group = "allAuthenticatedUsers"
+  }
+  access {
+    role          = "OWNER"
+    special_group = "projectOwners"
   }
   dataset_id                 = "farmhash"
   delete_contents_on_destroy = true

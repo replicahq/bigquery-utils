@@ -31,8 +31,3 @@ RUN npm install && \
     rm -rf node_modules && \
     node test.js
 CMD ["cat", "farmhash.bundle.js"]
-
-# fh = require("./farmhash.bundle")
-# fh.wasm_bindgen.fingerprint64('hi')
-# var v = fh.wasm.then((bind) => {return bind.fingerprint64('hi');}).then((v) => console.log(v))
-# fh.wasm.then(() => {fh.wasm_bindgen.fingerprint64('hi');}).then((v) => console.log(v))

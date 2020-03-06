@@ -111,7 +111,7 @@ resource "google_project_service" "project" {
 
   # Enabling the service is eventually consistent
   provisioner "local-exec" {
-    command = "sleep 60"
+    command = "sleep 120"
   }
 }
 resource "google_bigquery_dataset" "farmhash" {

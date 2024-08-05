@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION bqutils.string.jaro_winkler_similarity(s1 STRING, s2 STRING)
 RETURNS FLOAT64
 LANGUAGE js AS """
+// Adapted from https://github.com/NaturalNode/natural/blob/19c57d1cbc7310370eaf8c44379ea37df943af0c/lib/natural/distance/jaro-winkler_distance.js#L105
 // Computes the Jaro distance between two strings
 function distance(s1, s2) {
   if (typeof(s1) !== 'string' || typeof(s2) !== 'string') {

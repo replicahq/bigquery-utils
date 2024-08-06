@@ -4,10 +4,6 @@ LANGUAGE js AS """
 // Adapted from https://github.com/NaturalNode/natural/blob/19c57d1cbc7310370eaf8c44379ea37df943af0c/lib/natural/distance/jaro-winkler_distance.js#L105
 // Computes the Jaro distance between two strings
 function distance(s1, s2) {
-  if (typeof(s1) !== 'string' || typeof(s2) !== 'string') {
-    return 0;
-  }
-
   if (s1.length === 0 || s2.length === 0) {
     return 0;
   }
@@ -67,7 +63,9 @@ function distance(s1, s2) {
 
 // Computes the Winkler distance between two strings
 function JaroWinklerDistance(s1, s2) {
-  if (s1 === s2) {
+  if (s1 === null || s2 === null) {
+	return null;
+  } else if (s1 === s2) {
     return 1;
   } else {
 
